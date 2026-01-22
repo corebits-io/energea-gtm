@@ -105,66 +105,112 @@ The AI will analyze your current campaign data and provide detailed insights.
 
 ## MCP Server Configuration
 
-This dashboard uses the Model Context Protocol (MCP) to connect to Heyreach and Instantly data sources.
+This dashboard uses the Model Context Protocol (MCP) to connect to Heyreach and Instantly data sources via HTTP.
 
-### Setting up MCP Servers
+### Heyreach MCP Server
 
-You need to provide the command and arguments to run your MCP servers. For example:
+The dashboard connects to the official Heyreach MCP server at `https://mcp.heyreach.io/mcp`.
 
-**For Heyreach:**
+**Authentication:** Uses MCP key in the URL query parameter (`xMcpKey`)
+
+**Configuration:**
 ```env
-HEYREACH_MCP_COMMAND=npx
-HEYREACH_MCP_ARGS=-y @your-org/heyreach-mcp-server
+HEYREACH_MCP_URL=https://mcp.heyreach.io/mcp
+HEYREACH_MCP_KEY=your_heyreach_mcp_key
 ```
 
-**For Instantly:**
+### Instantly MCP Server
+
+The dashboard connects to the official Instantly MCP server at `https://mcp.instantly.ai/mcp`.
+
+**Authentication:** Uses API key in the Authorization header
+
+**Configuration:**
 ```env
-INSTANTLY_MCP_COMMAND=npx
-INSTANTLY_MCP_ARGS=-y @your-org/instantly-mcp-server
+INSTANTLY_MCP_URL=https://mcp.instantly.ai/mcp
+INSTANTLY_MCP_KEY=your_instantly_api_key
 ```
 
-### Expected MCP Server Tools
+**Getting your Instantly API key:**
+1. Log into your Instantly account
+2. Go to Integrations → API Keys
+3. Click "Create API Key"
+4. Copy and securely store the key
 
-The dashboard expects your MCP servers to provide the following tools:
+### Tool Discovery
 
-**Heyreach MCP Server:**
-- `get_campaigns`: Returns list of all campaigns
-- `get_campaign_details`: Returns details for a specific campaign
-- `get_stats`: Returns overall statistics
+The dashboard automatically discovers available tools from both MCP servers and tries common tool names for fetching campaigns:
 
-**Instantly MCP Server:**
-- `get_campaigns`: Returns list of all campaigns
-- `get_campaign_details`: Returns details for a specific campaign
-- `get_stats`: Returns overall statistics
+**Common tool names it tries:**
+- `get_campaigns`, `list_campaigns`, `campaigns_list`, `fetch_campaigns`
+- `get_campaign_details`, `campaign_details`, `get_campaign`
+- `get_stats`, `stats`, `get_statistics`, `get_analytics`
 
-If your MCP servers use different tool names, update the files in `lib/mcp/` accordingly.
+The integration is flexible and will work with various tool naming conventions.
 
 ## Deployment
 
 ### Deploy to Vercel (Recommended)
 
-1. Push your code to GitHub
-2. Import your repository in [Vercel](https://vercel.com)
-3. Add environment variables in Vercel project settings
-4. Deploy
+#### Step 1: Create Vercel Account
+
+Go to [Vercel](https://vercel.com) and sign up with your GitHub account.
+
+#### Step 2: Import Your Repository
+
+1. Click "Add New..." → "Project"
+2. Select your GitHub repository (`corebits-io/energea-gtm`)
+3. Choose the branch: `claude/campaign-stats-dashboard-YBINy` (or `main` after merging)
+
+#### Step 3: Configure Environment Variables
+
+In the Vercel project settings, add these environment variables:
+
+**Required:**
+- `ANTHROPIC_API_KEY` - Your Claude API key from [Anthropic Console](https://console.anthropic.com/)
+- `HEYREACH_MCP_URL` - `https://mcp.heyreach.io/mcp`
+- `HEYREACH_MCP_KEY` - Your Heyreach MCP key (already provided)
+- `INSTANTLY_MCP_URL` - `https://mcp.instantly.ai/mcp`
+- `INSTANTLY_MCP_KEY` - Your Instantly API key (get from Integrations → API Keys in Instantly)
+
+**To add environment variables in Vercel:**
+1. Go to your project → Settings → Environment Variables
+2. Add each variable with its value
+3. Make sure to select all environments (Production, Preview, Development)
+
+#### Step 4: Deploy
+
+Click "Deploy" and Vercel will build and deploy your dashboard!
+
+Your dashboard will be live at: `https://your-project-name.vercel.app`
+
+### Using Vercel CLI (Alternative)
 
 ```bash
-# Or use Vercel CLI
+# Install Vercel CLI
 npm install -g vercel
+
+# Login to Vercel
+vercel login
+
+# Deploy (will prompt for environment variables on first deploy)
 vercel
+
+# For production deployment
+vercel --prod
 ```
 
-### Environment Variables in Production
+### Environment Variables Reference
 
-Make sure to add all environment variables from `.env` to your Vercel project:
+Make sure ALL these variables are set in Vercel:
 
-- `ANTHROPIC_API_KEY`
-- `HEYREACH_MCP_COMMAND`
-- `HEYREACH_MCP_ARGS`
-- `INSTANTLY_MCP_COMMAND`
-- `INSTANTLY_MCP_ARGS`
-- `HEYREACH_API_KEY` (if needed)
-- `INSTANTLY_API_KEY` (if needed)
+| Variable | Description | Example Value |
+|----------|-------------|---------------|
+| `ANTHROPIC_API_KEY` | Claude API key for AI chat | `sk-ant-xxxxx` |
+| `HEYREACH_MCP_URL` | Heyreach MCP endpoint | `https://mcp.heyreach.io/mcp` |
+| `HEYREACH_MCP_KEY` | Heyreach MCP authentication key | `SFvkj7...` |
+| `INSTANTLY_MCP_URL` | Instantly MCP endpoint | `https://mcp.instantly.ai/mcp` |
+| `INSTANTLY_MCP_KEY` | Instantly API key | Your API key from Instantly dashboard |
 
 ## Project Structure
 

@@ -1,29 +1,49 @@
 import { NextResponse } from 'next/server';
 import { initHeyreachMCP } from '@/lib/mcp/heyreach';
 import { initInstantlyMCP } from '@/lib/mcp/instantly';
+import { getMCPManager } from '@/lib/mcp/client';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST() {
   try {
-    // Initialize MCP connections
-    // These configurations should come from environment variables
-    const heyreachConfig = {
-      command: process.env.HEYREACH_MCP_COMMAND || 'npx',
-      args: (process.env.HEYREACH_MCP_ARGS || '').split(' ').filter(Boolean),
+    // Initialize MCP connections (will use environment variables)
+    const results = {
+      heyreach: { success: false, error: null as string | null },
+      instantly: { success: false, error: null as string | null },
     };
 
-    const instantlyConfig = {
-      command: process.env.INSTANTLY_MCP_COMMAND || 'npx',
-      args: (process.env.INSTANTLY_MCP_ARGS || '').split(' ').filter(Boolean),
+    // Try to initialize Heyreach
+    try {
+      await initHeyreachMCP();
+      results.heyreach.success = true;
+    } catch (error: unknown) {
+      results.heyreach.error = error instanceof Error ? error.message : 'Unknown error';
+    }
+
+    // Try to initialize Instantly
+    try {
+      await initInstantlyMCP();
+      results.instantly.success = true;
+    } catch (error: unknown) {
+      results.instantly.error = error instanceof Error ? error.message : 'Unknown error';
+    }
+
+    const manager = getMCPManager();
+
+    // Get connection status
+    const status = {
+      heyreach: {
+        connected: manager.isConnected('heyreach'),
+        ...results.heyreach,
+      },
+      instantly: {
+        connected: manager.isConnected('instantly'),
+        ...results.instantly,
+      },
     };
 
-    await Promise.all([
-      initHeyreachMCP(heyreachConfig),
-      initInstantlyMCP(instantlyConfig),
-    ]);
-
-    return NextResponse.json({ success: true, message: 'MCP connections initialized' });
+    return NextResponse.json(status);
   } catch (error) {
     console.error('Error initializing MCP:', error);
     return NextResponse.json(

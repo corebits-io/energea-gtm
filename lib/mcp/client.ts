@@ -1,15 +1,25 @@
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 
-export interface MCPConfig {
+export interface StdioMCPConfig {
+  type: 'stdio';
   command: string;
   args: string[];
   env?: Record<string, string>;
 }
 
+export interface HTTPMCPConfig {
+  type: 'http';
+  url: string;
+  headers?: Record<string, string>;
+}
+
+export type MCPConfig = StdioMCPConfig | HTTPMCPConfig;
+
 export class MCPClientManager {
   private clients: Map<string, Client> = new Map();
-  private transports: Map<string, StdioClientTransport> = new Map();
+  private transports: Map<string, StdioClientTransport | StreamableHTTPClientTransport> = new Map();
 
   async connectToServer(
     serverName: string,
@@ -19,11 +29,24 @@ export class MCPClientManager {
       return this.clients.get(serverName)!;
     }
 
-    const transport = new StdioClientTransport({
-      command: config.command,
-      args: config.args,
-      env: config.env,
-    });
+    let transport: StdioClientTransport | StreamableHTTPClientTransport;
+
+    if (config.type === 'http') {
+      // HTTP transport for remote MCP servers
+      const url = new URL(config.url);
+      transport = new StreamableHTTPClientTransport(url, config.headers ? {
+        requestInit: {
+          headers: config.headers,
+        },
+      } : undefined);
+    } else {
+      // Stdio transport for local MCP servers
+      transport = new StdioClientTransport({
+        command: config.command,
+        args: config.args,
+        env: config.env,
+      });
+    }
 
     const client = new Client(
       {
