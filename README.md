@@ -16,7 +16,7 @@ A comprehensive real-time analytics dashboard for monitoring Heyreach (LinkedIn)
 - **Framework**: Next.js 14 (React 18) with TypeScript
 - **Styling**: TailwindCSS with shadcn/ui components
 - **Charts**: Recharts for data visualization
-- **AI**: Claude API (Anthropic) for conversational queries
+- **AI**: OpenAI API (GPT-4o-mini) for conversational queries
 - **Data Integration**: MCP (Model Context Protocol) for Heyreach and Instantly
 - **Deployment**: Optimized for Vercel
 
@@ -25,7 +25,7 @@ A comprehensive real-time analytics dashboard for monitoring Heyreach (LinkedIn)
 Before you begin, ensure you have:
 
 1. **Node.js 18+** installed
-2. **Anthropic API Key**: Get one from [Anthropic Console](https://console.anthropic.com/)
+2. **OpenAI API Key**: Get one from [Anthropic Console](https://platform.openai.com/api-keys/)
 3. **Heyreach MCP Server**: Access to your Heyreach MCP server configuration
 4. **Instantly MCP Server**: Access to your Instantly MCP server configuration
 5. **API Keys**: Heyreach and Instantly API keys (if required by your MCP servers)
@@ -56,8 +56,8 @@ cp .env.example .env
 Edit `.env` and add your credentials:
 
 ```env
-# Required: Anthropic API Key for AI chat
-ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxx
+# Required: OpenAI API Key for AI chat
+OPENAI_API_KEY=sk-xxxxxxxxxxxxx
 
 # Required: Heyreach MCP Server Configuration
 HEYREACH_MCP_COMMAND=npx
@@ -167,7 +167,7 @@ Go to [Vercel](https://vercel.com) and sign up with your GitHub account.
 In the Vercel project settings, add these environment variables:
 
 **Required:**
-- `ANTHROPIC_API_KEY` - Your Claude API key from [Anthropic Console](https://console.anthropic.com/)
+- `OPENAI_API_KEY` - Your Claude API key from [Anthropic Console](https://platform.openai.com/api-keys/)
 - `HEYREACH_MCP_URL` - `https://mcp.heyreach.io/mcp`
 - `HEYREACH_MCP_KEY` - Your Heyreach MCP key (already provided)
 - `INSTANTLY_MCP_URL` - `https://mcp.instantly.ai/mcp`
@@ -206,7 +206,7 @@ Make sure ALL these variables are set in Vercel:
 
 | Variable | Description | Example Value |
 |----------|-------------|---------------|
-| `ANTHROPIC_API_KEY` | Claude API key for AI chat | `sk-ant-xxxxx` |
+| `OPENAI_API_KEY` | Claude API key for AI chat | `sk-ant-xxxxx` |
 | `HEYREACH_MCP_URL` | Heyreach MCP endpoint | `https://mcp.heyreach.io/mcp` |
 | `HEYREACH_MCP_KEY` | Heyreach MCP authentication key | `SFvkj7...` |
 | `INSTANTLY_MCP_URL` | Instantly MCP endpoint | `https://mcp.instantly.ai/mcp` |
@@ -275,7 +275,7 @@ If you see "Failed to fetch campaigns" errors:
 
 If the AI chat doesn't respond:
 
-1. Verify your `ANTHROPIC_API_KEY` is set correctly
+1. Verify your `OPENAI_API_KEY` is set correctly
 2. Check your Anthropic API quota and billing
 3. Check the browser console for error messages
 

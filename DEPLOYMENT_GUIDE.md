@@ -8,7 +8,7 @@ Before you begin, make sure you have:
 
 - [x] **Heyreach MCP Key**: Already configured (`SFvkj7RqIIGUKNkdDugDC4dc3yUcOfoRd8O7WhhTLx8=`)
 - [ ] **Instantly API Key**: Get from [Instantly Dashboard](https://app.instantly.ai/) → Integrations → API Keys
-- [ ] **Anthropic API Key**: Get from [Anthropic Console](https://console.anthropic.com/)
+- [ ] **OpenAI API Key**: Get from [Anthropic Console](https://platform.openai.com/api-keys/)
 - [ ] **Vercel Account**: Sign up at [vercel.com](https://vercel.com)
 
 ## Step 1: Get Your Instantly API Key
@@ -19,13 +19,13 @@ Before you begin, make sure you have:
 4. **Copy the key** (you'll need this for Vercel)
 5. Keep it safe - treat it like a password!
 
-## Step 2: Get Your Anthropic API Key
+## Step 2: Get Your OpenAI API Key
 
-1. Go to https://console.anthropic.com/
+1. Go to https://platform.openai.com/api-keys/
 2. Sign up or log in with your account
 3. Go to **API Keys** in the dashboard
 4. Click **"Create Key"**
-5. **Copy the API key** (starts with `sk-ant-`)
+5. **Copy the API key** (starts with `sk-`)
 6. Save it securely!
 
 ## Step 3: Deploy to Vercel
@@ -53,7 +53,7 @@ Before you begin, make sure you have:
 
 | Variable Name | Value | Where to Get It |
 |---------------|-------|-----------------|
-| `ANTHROPIC_API_KEY` | `sk-ant-xxxxx` | From Step 2 (Anthropic Console) |
+| `OPENAI_API_KEY` | `sk-xxxxx` | From Step 2 (OpenAI Platform) |
 | `HEYREACH_MCP_URL` | `https://mcp.heyreach.io/mcp` | Copy exactly as shown |
 | `HEYREACH_MCP_KEY` | `SFvkj7RqIIGUKNkdDugDC4dc3yUcOfoRd8O7WhhTLx8=` | Already configured |
 | `INSTANTLY_MCP_URL` | `https://mcp.instantly.ai/mcp` | Copy exactly as shown |
@@ -115,11 +115,11 @@ Before you begin, make sure you have:
 3. Check for typos or extra spaces
 4. Re-deploy: Deployments → Click "..." → Redeploy
 
-### "ANTHROPIC_API_KEY is not set" Error
+### "OPENAI_API_KEY is not set" Error
 
 **Solution:**
-1. Make sure you added `ANTHROPIC_API_KEY` in Vercel
-2. The value should start with `sk-ant-`
+1. Make sure you added `OPENAI_API_KEY` in Vercel
+2. The value should start with `sk-`
 3. Redeploy after adding it
 
 ### Campaigns Show Empty
