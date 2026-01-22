@@ -20,12 +20,12 @@ export async function initHeyreachMCP() {
     throw new Error('HEYREACH_MCP_KEY environment variable is not set');
   }
 
-  // Build the full URL with the key
-  const fullUrl = `${mcpUrl}?xMcpKey=${encodeURIComponent(mcpKey)}`;
-
   const config: MCPConfig = {
     type: 'http',
-    url: fullUrl,
+    url: mcpUrl,
+    headers: {
+      'X-API-Key': mcpKey,
+    },
   };
 
   await manager.connectToServer(HEYREACH_SERVER, config);
