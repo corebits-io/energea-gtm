@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
-import { getHeyreachCampaigns } from '@/lib/mcp/heyreach';
-import { getInstantlyCampaigns } from '@/lib/mcp/instantly';
+import { getHeyreachCampaigns } from '@/lib/api/heyreach';
+import { getInstantlyCampaigns } from '@/lib/api/instantly';
 
 export const dynamic = 'force-dynamic';
 
