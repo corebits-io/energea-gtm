@@ -115,9 +115,9 @@ ${instantlyCampaigns.map(c => `
       content: message,
     });
 
-    // Call Claude API
+    // Call Claude API with Haiku for cost-effective campaign analytics
     const response = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
+      model: 'claude-3-5-haiku-20241022',
       max_tokens: 1024,
       system: `You are a helpful GTM (Go-To-Market) analytics assistant for a B2B lead generation agency. You help analyze campaign performance data from Heyreach (LinkedIn outreach) and Instantly (email outreach) platforms.
 
