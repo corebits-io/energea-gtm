@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Send, Loader2 } from 'lucide-react';
 import { ChatMessage } from '@/types/campaign';
+import ReactMarkdown from 'react-markdown';
 
 export function ChatInterface() {
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -106,7 +107,13 @@ export function ChatInterface() {
                     : 'bg-muted'
                 }`}
               >
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                {message.role === 'user' ? (
+                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                ) : (
+                  <div className="text-sm prose prose-sm dark:prose-invert max-w-none">
+                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                  </div>
+                )}
                 <p className="text-xs opacity-70 mt-1">
                   {message.timestamp.toLocaleTimeString()}
                 </p>
