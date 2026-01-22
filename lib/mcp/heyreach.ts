@@ -54,11 +54,11 @@ export async function getHeyreachCampaigns(): Promise<HeyreachCampaign[]> {
 
     for (const toolName of possibleToolNames) {
       try {
-        const result: unknown = await manager.callTool(HEYREACH_SERVER, toolName, {});
+        const result = await manager.callTool(HEYREACH_SERVER, toolName, {}) as any;
 
         // Parse the result based on MCP response format
         if (result.content && Array.isArray(result.content)) {
-          const textContent = result.content.find((c: unknown) => c.type === 'text');
+          const textContent = result.content.find((c: any) => c.type === 'text');
           if (textContent && textContent.text) {
             const data = JSON.parse(textContent.text);
             return Array.isArray(data) ? data : data.campaigns || [];
@@ -69,7 +69,7 @@ export async function getHeyreachCampaigns(): Promise<HeyreachCampaign[]> {
         return [];
       } catch (error: unknown) {
         // If tool not found, try next name
-        if (error.message?.includes('not found') || error.message?.includes('unknown')) {
+        if (error instanceof Error && (error.message?.includes('not found') || error.message?.includes('unknown'))) {
           continue;
         }
         throw error;
@@ -99,14 +99,14 @@ export async function getHeyreachCampaignDetails(campaignId: string): Promise<He
 
     for (const toolName of possibleToolNames) {
       try {
-        const result: unknown = await manager.callTool(HEYREACH_SERVER, toolName, {
+        const result = await manager.callTool(HEYREACH_SERVER, toolName, {
           campaign_id: campaignId,
           campaignId: campaignId,
           id: campaignId,
-        });
+        }) as any;
 
         if (result.content && Array.isArray(result.content)) {
-          const textContent = result.content.find((c: unknown) => c.type === 'text');
+          const textContent = result.content.find((c: any) => c.type === 'text');
           if (textContent && textContent.text) {
             return JSON.parse(textContent.text);
           }
@@ -114,7 +114,7 @@ export async function getHeyreachCampaignDetails(campaignId: string): Promise<He
 
         return null;
       } catch (error: unknown) {
-        if (error.message?.includes('not found') || error.message?.includes('unknown')) {
+        if (error instanceof Error && (error.message?.includes('not found') || error.message?.includes('unknown'))) {
           continue;
         }
         throw error;
@@ -144,10 +144,10 @@ export async function getHeyreachStats(): Promise<unknown> {
 
     for (const toolName of possibleToolNames) {
       try {
-        const result: unknown = await manager.callTool(HEYREACH_SERVER, toolName, {});
+        const result = await manager.callTool(HEYREACH_SERVER, toolName, {}) as any;
 
         if (result.content && Array.isArray(result.content)) {
-          const textContent = result.content.find((c: unknown) => c.type === 'text');
+          const textContent = result.content.find((c: any) => c.type === 'text');
           if (textContent && textContent.text) {
             return JSON.parse(textContent.text);
           }
@@ -155,7 +155,7 @@ export async function getHeyreachStats(): Promise<unknown> {
 
         return {};
       } catch (error: unknown) {
-        if (error.message?.includes('not found') || error.message?.includes('unknown')) {
+        if (error instanceof Error && (error.message?.includes('not found') || error.message?.includes('unknown'))) {
           continue;
         }
         throw error;

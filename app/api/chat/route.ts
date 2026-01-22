@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 import { getHeyreachCampaigns } from '@/lib/mcp/heyreach';
 import { getInstantlyCampaigns } from '@/lib/mcp/instantly';
 
 export const dynamic = 'force-dynamic';
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY || '',
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY || '',
 });
 
 export async function POST(request: Request) {
@@ -97,29 +97,11 @@ ${instantlyCampaigns.map(c => `
 `).join('\n')}
 `;
 
-    // Format conversation history
-    const messages: Anthropic.MessageParam[] = [];
-
-    if (history && Array.isArray(history)) {
-      for (const msg of history) {
-        messages.push({
-          role: msg.role === 'assistant' ? 'assistant' : 'user',
-          content: msg.content,
-        });
-      }
-    }
-
-    // Add current message
-    messages.push({
-      role: 'user',
-      content: message,
-    });
-
-    // Call Claude API
-    const response = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 1024,
-      system: `You are a helpful GTM (Go-To-Market) analytics assistant for a B2B lead generation agency. You help analyze campaign performance data from Heyreach (LinkedIn outreach) and Instantly (email outreach) platforms.
+    // Format conversation history for OpenAI
+    const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+      {
+        role: 'system',
+        content: `You are a helpful GTM (Go-To-Market) analytics assistant for a B2B lead generation agency. You help analyze campaign performance data from Heyreach (LinkedIn outreach) and Instantly (email outreach) platforms.
 
 Your role is to:
 1. Answer questions about campaign performance with specific data and insights
@@ -137,12 +119,32 @@ When answering questions:
 
 Here's the current campaign data:
 ${campaignContext}`,
+      },
+    ];
+
+    if (history && Array.isArray(history)) {
+      for (const msg of history) {
+        messages.push({
+          role: msg.role === 'assistant' ? 'assistant' : 'user',
+          content: msg.content,
+        });
+      }
+    }
+
+    // Add current message
+    messages.push({
+      role: 'user',
+      content: message,
+    });
+
+    // Call OpenAI API with GPT-4o-mini for cost-effective campaign analytics
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      max_tokens: 1024,
       messages,
     });
 
-    const assistantMessage = response.content[0].type === 'text'
-      ? response.content[0].text
-      : 'Unable to generate response';
+    const assistantMessage = response.choices[0]?.message?.content || 'Unable to generate response';
 
     return NextResponse.json({
       message: assistantMessage,
