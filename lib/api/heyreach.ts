@@ -18,7 +18,9 @@ async function fetchHeyreach(endpoint: string, options: RequestInit = {}) {
   });
 
   if (!response.ok) {
-    throw new Error(`Heyreach API error: ${response.status} ${response.statusText}`);
+    const errorText = await response.text();
+    console.error(`Heyreach API error on ${endpoint}: ${response.status} ${response.statusText}`, errorText);
+    throw new Error(`Heyreach API error: ${response.status} ${response.statusText} - ${errorText}`);
   }
 
   return response.json();

@@ -18,7 +18,9 @@ async function fetchInstantly(endpoint: string, options: RequestInit = {}) {
   });
 
   if (!response.ok) {
-    throw new Error(`Instantly API error: ${response.status} ${response.statusText}`);
+    const errorText = await response.text();
+    console.error(`Instantly API error on ${endpoint}: ${response.status} ${response.statusText}`, errorText);
+    throw new Error(`Instantly API error: ${response.status} ${response.statusText} - ${errorText}`);
   }
 
   return response.json();
