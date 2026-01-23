@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+// Deployment trigger
+
 export const metadata: Metadata = {
   title: "Campaign Analytics Dashboard",
   description: "Real-time analytics dashboard for monitoring Heyreach and Instantly campaigns",
