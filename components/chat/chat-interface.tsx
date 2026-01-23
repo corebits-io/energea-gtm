@@ -110,8 +110,26 @@ export function ChatInterface() {
                 {message.role === 'user' ? (
                   <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                 ) : (
-                  <div className="text-sm prose prose-sm dark:prose-invert max-w-none">
-                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                  <div className="text-sm markdown-content">
+                    <ReactMarkdown
+                      components={{
+                        h1: ({node, ...props}) => <h1 className="text-xl font-bold mb-2" {...props} />,
+                        h2: ({node, ...props}) => <h2 className="text-lg font-bold mb-2" {...props} />,
+                        h3: ({node, ...props}) => <h3 className="text-base font-bold mb-1" {...props} />,
+                        p: ({node, ...props}) => <p className="mb-2" {...props} />,
+                        ul: ({node, ...props}) => <ul className="list-disc list-inside mb-2" {...props} />,
+                        ol: ({node, ...props}) => <ol className="list-decimal list-inside mb-2" {...props} />,
+                        li: ({node, ...props}) => <li className="mb-1" {...props} />,
+                        strong: ({node, ...props}) => <strong className="font-bold" {...props} />,
+                        em: ({node, ...props}) => <em className="italic" {...props} />,
+                        code: ({node, inline, ...props}) =>
+                          inline ?
+                            <code className="bg-accent px-1 rounded text-xs" {...props} /> :
+                            <code className="block bg-accent p-2 rounded my-2 text-xs overflow-x-auto" {...props} />
+                      }}
+                    >
+                      {message.content}
+                    </ReactMarkdown>
                   </div>
                 )}
                 <p className="text-xs opacity-70 mt-1">
