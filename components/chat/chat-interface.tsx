@@ -122,10 +122,12 @@ export function ChatInterface() {
                         li: ({node, ...props}) => <li className="mb-1" {...props} />,
                         strong: ({node, ...props}) => <strong className="font-bold" {...props} />,
                         em: ({node, ...props}) => <em className="italic" {...props} />,
-                        code: ({node, inline, ...props}) =>
-                          inline ?
-                            <code className="bg-accent px-1 rounded text-xs" {...props} /> :
-                            <code className="block bg-accent p-2 rounded my-2 text-xs overflow-x-auto" {...props} />
+                        code: ({node, className, children, ...props}: any) => {
+                          const isInline = !className || !className.includes('language-');
+                          return isInline ?
+                            <code className="bg-accent px-1 rounded text-xs" {...props}>{children}</code> :
+                            <code className="block bg-accent p-2 rounded my-2 text-xs overflow-x-auto" {...props}>{children}</code>;
+                        }
                       }}
                     >
                       {message.content}
