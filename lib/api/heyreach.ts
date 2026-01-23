@@ -29,34 +29,48 @@ async function fetchHeyreach(endpoint: string, options: RequestInit = {}) {
 // Get list of campaigns from Heyreach
 export async function getHeyreachCampaigns(): Promise<HeyreachCampaign[]> {
   try {
-    // Try to get campaigns - the exact endpoint might vary
-    // Common patterns: /campaigns, /campaign/list, /li_campaigns/GetAll
+    // Try to get campaigns - testing multiple endpoint patterns
     const possibleEndpoints = [
+      '/li_campaign/GetAll',
+      '/campaign/GetAll',
       '/campaigns',
       '/campaign/list',
       '/li_campaigns/GetAll',
-      '/campaign/GetAll',
+      '/Campaign/GetAll',
+      '/v1/campaigns',
+      '/api/campaigns',
     ];
 
     for (const endpoint of possibleEndpoints) {
       try {
+        console.log(`Trying Heyreach endpoint: ${endpoint}`);
         const data = await fetchHeyreach(endpoint);
+
+        console.log(`Heyreach response from ${endpoint}:`, JSON.stringify(data).substring(0, 200));
 
         // Handle different response formats
         if (Array.isArray(data)) {
+          console.log(`Success! Found campaigns array at ${endpoint}`);
           return data;
         } else if (data.campaigns && Array.isArray(data.campaigns)) {
+          console.log(`Success! Found data.campaigns at ${endpoint}`);
           return data.campaigns;
         } else if (data.data && Array.isArray(data.data)) {
+          console.log(`Success! Found data.data at ${endpoint}`);
           return data.data;
+        } else if (data.items && Array.isArray(data.items)) {
+          console.log(`Success! Found data.items at ${endpoint}`);
+          return data.items;
         }
       } catch (error) {
-        // If endpoint not found, try next one
+        // Log the error and try next endpoint
+        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+        console.log(`Heyreach endpoint ${endpoint} failed: ${errorMsg}`);
         continue;
       }
     }
 
-    console.warn('No suitable Heyreach campaigns endpoint found, returning empty array');
+    console.warn('No suitable Heyreach campaigns endpoint found after trying all options');
     return [];
   } catch (error) {
     console.error('Error fetching Heyreach campaigns:', error);

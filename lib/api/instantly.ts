@@ -31,16 +31,18 @@ export async function getInstantlyCampaigns(): Promise<InstantlyCampaign[]> {
   try {
     const data = await fetchInstantly('/campaigns?limit=100');
 
-    // Handle response format
+    // Handle response format - Instantly API v2 returns {items: [...]}
     if (Array.isArray(data)) {
       return data;
+    } else if (data.items && Array.isArray(data.items)) {
+      return data.items;
     } else if (data.campaigns && Array.isArray(data.campaigns)) {
       return data.campaigns;
     } else if (data.data && Array.isArray(data.data)) {
       return data.data;
     }
 
-    console.warn('Unexpected Instantly campaigns response format');
+    console.warn('Unexpected Instantly campaigns response format:', JSON.stringify(data).substring(0, 200));
     return [];
   } catch (error) {
     console.error('Error fetching Instantly campaigns:', error);
