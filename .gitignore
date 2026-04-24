@@ -40,3 +40,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env*.local
+
+# Scraper debug and output files
+page_source.html
+selenium_page_source.html
+test_page.html
+debug_page_*.html
+renewable_energy_companies.csv
